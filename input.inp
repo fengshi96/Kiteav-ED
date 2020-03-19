@@ -1,0 +1,33 @@
+NumberofSitesLx=4
+NumberofSitesLy=6
+IsPeriodicX=0
+IsPeriodicY=0
+IsAPeriodicX=1
+IsAPeriodicY=1
+RandomSeed=3
+Model=Kitaev
+## or HeisenbergChain
+
+Solver=none
+### -- none=Lanczos ED=Exact_Diag
+
+## HeisenbergChain
+## ED -3.3749326
+Reortho=1
+
+Kxx=1.0
+Kyy=1.0
+Kzz=1.0
+
+Bxx=-0.1
+Byy=-0.1
+Bzz=-0.1
+
+Temperature=1
+
+LanczosEps=0
+LanczosSteps=100
+Threads=1
+LancType=GS
+#### LancType=OnlyEgs (energy only), GS (returns groun-stateVector), All (return m number of states)
+
