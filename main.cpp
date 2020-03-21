@@ -1,7 +1,9 @@
 /* ***************************************************
  *  Authors:Chris Bishop & Nirav D. Patel
- *	Data:January 14, 2016
+ *	Date:January 14, 2016
  *	Platform: linux
+ *  Modified by: Shi Feng
+ *  	Date:Mar 24 2020 
  *  Language: C++
  *	Model: 3OrMC_MF-Test
  * ***************************************************
