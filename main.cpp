@@ -2,7 +2,7 @@
  *  Authors:Chris Bishop & Nirav D. Patel
  *	Date:January 14, 2016
  *	Platform: linux
- *  Modified by: Shi Feng
+ *  Engine Modified by: Shi Feng
  *  	Date:Mar 24 2020 
  *  Language: C++
  *	Model: 3OrMC_MF-Test
@@ -65,8 +65,8 @@ int main(int argc, char *argv[]) {
 
 	// Read from the inputfile
 	ConstVariablestype Parameters(inputfile);
-//	omp_set_dynamic(0);
-//	omp_set_num_threads(Parameters.Threads);
+	omp_set_dynamic(0);
+	omp_set_num_threads(Parameters.Threads);
 	Lattice Lat(Parameters);
 	int Nsite_ = Parameters.NumberofSites;
 
@@ -88,140 +88,140 @@ int main(int argc, char *argv[]) {
     std::cout << "       VM (MB): " << int(vm/1024) << "       RSS (MB): " << int(rss/1024) << std::endl;
 
 
-//    ObservType Observ(Parameters, Lat, Basis, Hamiltonian);
-//    DynLancType Lanczos(Parameters, Basis, Hamiltonian);
-//    Eigen::VectorXcd Psi;
-//	if(Parameters.Solver=="ED") {
-//        Psi = ExactDiag(Parameters, Basis, Hamiltonian, Observ);
-//    } else {
-//        Psi = Lanczos.Lanczos_Nirav(Parameters.LancType);
-//        cout << setprecision(6) << fixed;
-//        cout << " Ritz values: ";
-//        for(int i=0;i<Lanczos.TriDeval.size();i++) cout << Lanczos.TriDeval[i] << " ";
-//        cout << endl;
-//    }
+    ObservType Observ(Parameters, Lat, Basis, Hamiltonian);
+    DynLancType Lanczos(Parameters, Basis, Hamiltonian);
+    Eigen::VectorXcd Psi;
+	if(Parameters.Solver=="ED") {
+        Psi = ExactDiag(Parameters, Basis, Hamiltonian, Observ);
+    } else {
+        Psi = Lanczos.Lanczos_Nirav(Parameters.LancType);
+        cout << setprecision(6) << fixed;
+        cout << " Ritz values: ";
+        for(int i=0;i<Lanczos.TriDeval.size();i++) cout << Lanczos.TriDeval[i] << " ";
+        cout << endl;
+    }
 
-//    cout << setprecision(6) << fixed;
-//    cout << " Ritz values: ";
-//    Eigen::VectorXcd Sxi, Syi, Szi, Spi, Smi;
-//    Observ.measureLocalS(Psi, Sxi, Syi, Szi, Spi, Smi);
+    cout << setprecision(6) << fixed;
+    cout << " Ritz values: ";
+    Eigen::VectorXcd Sxi, Syi, Szi, Spi, Smi;
+    Observ.measureLocalS(Psi, Sxi, Syi, Szi, Spi, Smi);
 
-//    std::vector<Eigen::MatrixXcd> A(9);
-//    A[0] = Observ.TwoPointCorr("Sx","Sx",Psi); cout << A[0] << flush << endl << endl;
-//    A[1] = Observ.TwoPointCorr("Sx","Sy",Psi); cout << A[1] << flush << endl << endl;
-//    A[2] = Observ.TwoPointCorr("Sx","Sz",Psi); cout << A[2] << flush << endl << endl;
+    std::vector<Eigen::MatrixXcd> A(9);
+    A[0] = Observ.TwoPointCorr("Sx","Sx",Psi); cout << A[0] << flush << endl << endl;
+    A[1] = Observ.TwoPointCorr("Sx","Sy",Psi); cout << A[1] << flush << endl << endl;
+    A[2] = Observ.TwoPointCorr("Sx","Sz",Psi); cout << A[2] << flush << endl << endl;
 
-//    A[3] = Observ.TwoPointCorr("Sy","Sx",Psi); cout << A[3] << flush << endl << endl;
-//    A[4] = Observ.TwoPointCorr("Sy","Sy",Psi); cout << A[4] << flush << endl << endl;
-//    A[5] = Observ.TwoPointCorr("Sy","Sz",Psi); cout << A[5] << flush << endl << endl;
+    A[3] = Observ.TwoPointCorr("Sy","Sx",Psi); cout << A[3] << flush << endl << endl;
+    A[4] = Observ.TwoPointCorr("Sy","Sy",Psi); cout << A[4] << flush << endl << endl;
+    A[5] = Observ.TwoPointCorr("Sy","Sz",Psi); cout << A[5] << flush << endl << endl;
 
-//    A[6] = Observ.TwoPointCorr("Sz","Sx",Psi); cout << A[6] << flush << endl << endl;
-//    A[7] = Observ.TwoPointCorr("Sz","Sy",Psi); cout << A[7] << flush << endl << endl;
-//    A[8] = Observ.TwoPointCorr("Sz","Sz",Psi); cout << A[8] << flush << endl << endl;
+    A[6] = Observ.TwoPointCorr("Sz","Sx",Psi); cout << A[6] << flush << endl << endl;
+    A[7] = Observ.TwoPointCorr("Sz","Sy",Psi); cout << A[7] << flush << endl << endl;
+    A[8] = Observ.TwoPointCorr("Sz","Sz",Psi); cout << A[8] << flush << endl << endl;
 
-//    cout << " --> Spin total = ";
-//    dcomplex Stotal = A[0].sum() + A[4].sum() + A[8].sum();
-//    cout << Stotal << endl;
+    cout << " --> Spin total = ";
+    dcomplex Stotal = A[0].sum() + A[4].sum() + A[8].sum();
+    cout << Stotal << endl;
 
-//    cout << " --> Spin trace = ";
-//    Stotal = A[0].trace() + A[4].trace() + A[8].trace();
-//    cout << Stotal << endl << endl;
-
-
-//    cout << " --> Pairs = SxSx - SySy + iSxSy + iSySx \n";
-//    //Eigen::MatrixXcd AdagAdag = - A[0] + A[4] + dcomplex(0,1)*A[1] + dcomplex(0,1)*A[3];
-//    Eigen::MatrixXcd AdagAdag = A[0] - A[4] + dcomplex(0,1)*A[1] + dcomplex(0,1)*A[3];
-//    cout << AdagAdag << endl << endl;
-
-//    Eigen::VectorXcd pairx(Nsite_), pairy(Nsite_), pairz(Nsite_);
-//    for(int i=0; i<Nsite_;i++) {
-//        int n1x = Lat.N1neigh_(i,1);
-//        int n1y = Lat.N1neigh_(i,2);
-//        int n1z = Lat.N1neigh_(i,0);
-
-//        pairx(i) = AdagAdag(i,n1x) - Spi[i] *Spi[n1x];
-//        pairy(i) = AdagAdag(i,n1y) - Spi[i] *Spi[n1y];
-//        pairz(i) = AdagAdag(i,n1z) - Spi[i] *Spi[n1z];
-
-//        cout << i << " " << pairx(i) << " " << pairy(i) << " " << pairz(i) << " \n";
-//    }
-//    cout << endl << endl;
-//    cout << "total pair x,y,z = " << real(pairx.sum())/Nsite_ << " " << imag(pairx.sum())/Nsite_ << " "
-//                                  << real(pairy.sum())/Nsite_ << " " << imag(pairy.sum())/Nsite_ << " "
-//                                  << real(pairz.sum())/Nsite_ << " " << imag(pairz.sum())/Nsite_ << endl << endl;
+    cout << " --> Spin trace = ";
+    Stotal = A[0].trace() + A[4].trace() + A[8].trace();
+    cout << Stotal << endl << endl;
 
 
+    cout << " --> Pairs = SxSx - SySy + iSxSy + iSySx \n";
+    //Eigen::MatrixXcd AdagAdag = - A[0] + A[4] + dcomplex(0,1)*A[1] + dcomplex(0,1)*A[3];
+    Eigen::MatrixXcd AdagAdag = A[0] - A[4] + dcomplex(0,1)*A[1] + dcomplex(0,1)*A[3];
+    cout << AdagAdag << endl << endl;
+
+    Eigen::VectorXcd pairx(Nsite_), pairy(Nsite_), pairz(Nsite_);
+    for(int i=0; i<Nsite_;i++) {
+        int n1x = Lat.N1neigh_(i,1);
+        int n1y = Lat.N1neigh_(i,2);
+        int n1z = Lat.N1neigh_(i,0);
+
+        pairx(i) = AdagAdag(i,n1x) - Spi[i] *Spi[n1x];
+        pairy(i) = AdagAdag(i,n1y) - Spi[i] *Spi[n1y];
+        pairz(i) = AdagAdag(i,n1z) - Spi[i] *Spi[n1z];
+
+        cout << i << " " << pairx(i) << " " << pairy(i) << " " << pairz(i) << " \n";
+    }
+    cout << endl << endl;
+    cout << "total pair x,y,z = " << real(pairx.sum())/Nsite_ << " " << imag(pairx.sum())/Nsite_ << " "
+                                  << real(pairy.sum())/Nsite_ << " " << imag(pairy.sum())/Nsite_ << " "
+                                  << real(pairz.sum())/Nsite_ << " " << imag(pairz.sum())/Nsite_ << endl << endl;
 
 
 
-//    // -------------------------------
-//    // --- Topological Ent Entropy ---
-//    // -------------------------------.
-//    cout << endl << endl;
-//    cout << "Calculating the topological entanglement entropy " << endl;
 
 
-//    // -- Define a cut;
-//    Eigen::VectorXi S1sites(12);  // typedef Matrix< int , Dynamic , 1> Eigen::VectorXi
-//    Eigen::VectorXi S2sites(12);
-//    S1sites << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11;
-//    S2sites << 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23;
-//    //S1sites << 0, 7;
-//    //S2sites << 1, 2, 3, 4, 5, 6;
-//    Eigen::MatrixXi ABCutLabels = Basis.ABSplit(S1sites, S2sites);
-
-//    //cout << ABCutLabels << endl;
-//    cout << " --> Print ABCutLabels into ABCutLabels.dat";
-//    ofstream outfile;
-//    string outfilename1 = "ABCutLabels.dat";
-//    outfile.open(outfilename1);
-//    outfile << ABCutLabels;
-//    outfile.close();
-
-//    int S1Hil = pow(2,S1sites.size());
-//    int S2Hil = pow(2,S2sites.size());
-
-//    Eigen::MatrixXcd S1RDM(S1Hil,S1Hil);
-//    S1RDM.setZero();
-//    for (int i=0; i<S1Hil; i++) {
-//        for (int j=0; j<S1Hil; j++) {
-//            for (int k=0; k<S2Hil; k++) {
-//                SizeType ikL = ABCutLabels(i,k);
-//                SizeType jkL = ABCutLabels(j,k);
-//                S1RDM(i,j) += conj(Psi[ikL])*Psi[jkL];
-//            }
-//        }
-//    }
-//    cout << " --> Print reduced density matrix into S1RDM.dat\n";
-//    //cout << S1RDM << endl << endl;
-//    string outfilename2 = "S1RDM.dat";
-//    outfile.open(outfilename2);
-//    outfile << S1RDM;
-//    outfile.close();
-
-//    cout << " --> Trace of the reduced density matrix " << S1RDM.trace() << endl;
+    // -------------------------------
+    // --- Topological Ent Entropy ---
+    // -------------------------------.
+    cout << endl << endl;
+    cout << "Calculating the topological entanglement entropy " << endl;
 
 
+    // -- Define a cut;
+    Eigen::VectorXi S1sites(12);  // typedef Matrix< int , Dynamic , 1> Eigen::VectorXi
+    Eigen::VectorXi S2sites(12);
+    S1sites << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11;
+    S2sites << 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23;
+    //S1sites << 0, 7;
+    //S2sites << 1, 2, 3, 4, 5, 6;
+    Eigen::MatrixXi ABCutLabels = Basis.ABSplit(S1sites, S2sites);
 
-//    Eigen::MatrixXcd tmp = S1RDM;
-//    Eigen::VectorXd D;
-//    Diagonalize('V',tmp,D);
-//    cout << " --> eigen values of the RDM = ";
-//    for(int i=0;i<D.size();i++) cout << D[i] << ", ";
-//    cout << endl;
+    //cout << ABCutLabels << endl;
+    cout << " --> Print ABCutLabels into ABCutLabels.dat";
+    ofstream outfile;
+    string outfilename1 = "ABCutLabels.dat";
+    outfile.open(outfilename1);
+    outfile << ABCutLabels;
+    outfile.close();
 
+    int S1Hil = pow(2,S1sites.size());
+    int S2Hil = pow(2,S2sites.size());
 
-//    double entropy=0.0;
-//    for(int i=0;i<D.size();i++) {
-//        if(abs(D[i])>1e-6) {
-//            entropy += -D[i]*log(D[i]);
-//        }
-//    }
-//    cout << " --> vN Entropy = " << entropy << endl << endl;
+    Eigen::MatrixXcd S1RDM(S1Hil,S1Hil);
+    S1RDM.setZero();
+    for (int i=0; i<S1Hil; i++) {
+        for (int j=0; j<S1Hil; j++) {
+            for (int k=0; k<S2Hil; k++) {
+                SizeType ikL = ABCutLabels(i,k);
+                SizeType jkL = ABCutLabels(j,k);
+                S1RDM(i,j) += conj(Psi[ikL])*Psi[jkL];
+            }
+        }
+    }
+    cout << " --> Print reduced density matrix into S1RDM.dat\n";
+    //cout << S1RDM << endl << endl;
+    string outfilename2 = "S1RDM.dat";
+    outfile.open(outfilename2);
+    outfile << S1RDM;
+    outfile.close();
+
+    cout << " --> Trace of the reduced density matrix " << S1RDM.trace() << endl;
 
 
 
-//	cout << "--------THE END--------" << endl;
+    Eigen::MatrixXcd tmp = S1RDM;
+    Eigen::VectorXd D;
+    Diagonalize('V',tmp,D);
+    cout << " --> eigen values of the RDM = ";
+    for(int i=0;i<D.size();i++) cout << D[i] << ", ";
+    cout << endl;
+
+
+    double entropy=0.0;
+    for(int i=0;i<D.size();i++) {
+        if(abs(D[i])>1e-6) {
+            entropy += -D[i]*log(D[i]);
+        }
+    }
+    cout << " --> vN Entropy = " << entropy << endl << endl;
+
+
+
+	cout << "--------THE END--------" << endl;
 }
 
 
