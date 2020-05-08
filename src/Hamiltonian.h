@@ -37,8 +37,11 @@ public:
 		if (variables_.Model=="HeisenbergChain") {
 			HeisenbergChain_Connectors();
 		} else if (variables_.Model=="Kitaev") {
-			Connectors(); // Build Connectors in Single-particle states
-		} else {
+            Connectors(); // Build Connectors in Single-particle states
+        } else if (variables_.Model=="Heisenberg") {
+            Heisenberg_Connectors();
+            //Connectors();
+        } else {
 			std::cerr<<"Model="<<variables_.Model<<"\n";
 			throw std::string("Unknown Model parameter \n");
 		}
@@ -371,7 +374,7 @@ public:
 		for(int i=0;i<Nsite_;i++){ 	// ith site
 
 			int j = Lat_.N1neigh_(i,0);
-			if(i<j)  {
+			if(i<j)  {           
 				int jx = Lat_.indx_(j);
 				int jy = Lat_.indy_(j);
 				assert(Lat_.Nc_(jx,jy)!=-1);
@@ -454,7 +457,120 @@ public:
 	} // end function
 
 
+    // -------------------------------------------------------
+    void Heisenberg_Connectors() {
 
+        std::cout << "creating Heisenberg Connectors:" << std::endl;
+        Matrix<double> SinglePart_Kxx, SinglePart_Kyy; // local
+        Matrix<double> SinglePart_Kzz;
+        SinglePart_Kxx.resize(Nsite_,Nsite_);
+        SinglePart_Kyy.resize(Nsite_,Nsite_);
+        SinglePart_Kzz.resize(Nsite_,Nsite_);
+
+        // Neighbors for each site
+        for(int i=0;i<Nsite_;i++){ 	// ith site
+            int j = Lat_.N1neigh_(i,0); // bond 0
+            if(i<j)  {
+                int jx = Lat_.indx_(j);
+                int jy = Lat_.indy_(j);
+                assert(Lat_.Nc_(jx,jy)!=-1);
+                SinglePart_Kxx(i,j) = variables_.Kxx;
+                SinglePart_Kyy(i,j) = variables_.Kyy;
+                SinglePart_Kzz(i,j) = variables_.Kzz;
+            }
+
+            j = Lat_.N1neigh_(i,1); // bond 1
+            if(i<j)  {
+                int jx = Lat_.indx_(j);
+                int jy = Lat_.indy_(j);
+                assert(Lat_.Nc_(jx,jy)!=-1);
+                SinglePart_Kxx(i,j) = variables_.Kxx;
+                SinglePart_Kyy(i,j) = variables_.Kyy;
+                SinglePart_Kzz(i,j) = variables_.Kzz;
+            }
+
+            j = Lat_.N1neigh_(i,2); // bond 2
+            if(i<j)  {
+                int jx = Lat_.indx_(j);
+                int jy = Lat_.indy_(j);
+                assert(Lat_.Nc_(jx,jy)!=-1);
+                SinglePart_Kxx(i,j) = variables_.Kxx;
+                SinglePart_Kyy(i,j) = variables_.Kyy;
+                SinglePart_Kzz(i,j) = variables_.Kzz;
+            }
+
+            j = Lat_.N1neigh_(i,3); // bond 3
+            if(i<j)  {
+                int jx = Lat_.indx_(j);
+                int jy = Lat_.indy_(j);
+                assert(Lat_.Nc_(jx,jy)!=-1);
+                SinglePart_Kxx(i,j) = variables_.Kxx;
+                SinglePart_Kyy(i,j) = variables_.Kyy;
+                SinglePart_Kzz(i,j) = variables_.Kzz;
+            }
+
+        }
+
+        int Kxxbonds=SinglePart_Kxx.numNonZeros();
+        int Kyybonds=SinglePart_Kyy.numNonZeros();
+        int Kzzbonds=SinglePart_Kzz.numNonZeros();
+
+        cout << " Single particle Heisenberg lattice - xx " << endl;
+        SinglePart_Kxx.print();
+
+        cout << " Single particle Heisenberg lattice - yy " << endl;
+        SinglePart_Kyy.print();
+
+        cout << " Single particle Heisenberg lattice - zz " << endl;
+        SinglePart_Kzz.print();
+
+
+        if(Kxxbonds==0) Kxxbonds=1;
+        if(Kyybonds==0) Kyybonds=1;
+        if(Kzzbonds==0) Kzzbonds=1;
+        Kxx_pair.resize(Kxxbonds,2); Kyy_pair.resize(Kyybonds,2); Kzz_pair.resize(Kzzbonds,2);
+        Kxx_Conn.resize(Kxxbonds);   Kyy_Conn.resize(Kyybonds);   Kzz_Conn.resize(Kzzbonds);
+
+        int counter=0;
+        for(int i=0;i<Nsite_;i++) {
+            for(int j=0;j<Nsite_;j++) {
+                if(SinglePart_Kxx(i,j)!=0.0) {
+                    //assert(j>i);
+                    Kxx_pair(counter,0) = i;
+                    Kxx_pair(counter,1) = j;
+                    Kxx_Conn[counter] = SinglePart_Kxx(i,j);
+                    counter++;
+                }
+            }
+        }
+
+        counter=0;
+        for(int i=0;i<Nsite_;i++) {
+            for(int j=0;j<Nsite_;j++) {
+                if(SinglePart_Kyy(i,j)!=0.0) {
+                    //assert(j>i);
+                    Kyy_pair(counter,0) = i;
+                    Kyy_pair(counter,1) = j;
+                    Kyy_Conn[counter] = SinglePart_Kyy(i,j);
+                    counter++;
+                }
+            }
+        }
+
+        counter=0;
+        for(int i=0;i<Nsite_;i++) {
+            for(int j=0;j<Nsite_;j++) {
+                if(SinglePart_Kzz(i,j)!=0.0) {
+                    //assert(j>i);
+                    Kzz_pair(counter,0) = i;
+                    Kzz_pair(counter,1) = j;
+                    Kzz_Conn[counter] = SinglePart_Kzz(i,j);
+                    counter++;
+                }
+            }
+        }
+
+    } // end function
 
 
 

@@ -119,7 +119,7 @@ void Matrix<T>::print(){
 	std::cout<<"shape:= ("<<nrow_<<","<<ncol_<<")"<<std::endl;
 	for(int i=0; i<nrow_; i++) {
 		for(int j=0; j<ncol_; j++) {
-			std::cout << data_[i+j*nrow_] << "\t";
+            std::cout << data_[i+j*nrow_] << " ";
 		}
 		std::cout << std::endl;
 	}

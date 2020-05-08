@@ -1,14 +1,14 @@
 NumberofSitesLx=4
-NumberofSitesLy=6
-IsPeriodicX=0
-IsPeriodicY=0
-IsAPeriodicX=1
-IsAPeriodicY=1
+NumberofSitesLy=4
+IsPeriodicX=1
+IsPeriodicY=1
+IsAPeriodicX=0
+IsAPeriodicY=0
 RandomSeed=3
-Model=Kitaev
-## or HeisenbergChain
+Model=Heisenberg
+## Kitaev or HeisenbergChain or Heisenberg
 
-Solver=none
+Solver=ED
 ### -- none=Lanczos ED=Exact_Diag
 
 ## HeisenbergChain
@@ -19,9 +19,9 @@ Kxx=1.0
 Kyy=1.0
 Kzz=1.0
 
-Bxx=-0.1
-Byy=-0.1
-Bzz=-0.1
+Bxx=-0.0
+Byy=-0.0
+Bzz=-0.0
 
 Temperature=1
 

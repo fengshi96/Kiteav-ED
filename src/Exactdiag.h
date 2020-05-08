@@ -33,6 +33,7 @@ Eigen::VectorXcd ExactDiag(ConstVariables& variables_, QBasis& Basis_,
 	std::cout << "Begin Exact Diagonalization! --- "<<std::endl;
 	int N = Basis_.basis.size();
 	Matrix<dcomplex> Ham(N,N);
+    Ham.print();
 	vector<double> D(N);
 	//make the Hamiltonian
 	for (int i=0; i<N; i++) {

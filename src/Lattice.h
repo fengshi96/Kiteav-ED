@@ -46,7 +46,15 @@ public:
 			N2neigh_.fill(-2);
 			Chain();
 
-		}
+        } else if (variables_.Model=="Heisenberg") {
+            Number1Neigh_=4;
+            Number2Neigh_=4;
+            N1neigh_.resize(Nsite_,Number1Neigh_);
+            N2neigh_.resize(Nsite_,Number2Neigh_);
+            N1neigh_.fill(-1);
+            N2neigh_.fill(-2);
+            Heisenberg();
+        }
 	}
 	// ---------------- chain ---------------------------
 	void Chain() {
@@ -554,6 +562,7 @@ public:
             // APBC
 
             if(variables_.IsAPeriodicY==true && shift=="right") {
+                //std::cout << "ISAPeriodicY is true";
                 jx = int(ix - LLY);  //jx the the x coordinate of matrix, which coincide with LY direction of lattice
                 jy = 0;
                 if(jx<xmax && iy==ymax && Nc_(jx,jy)!=-1) {
@@ -572,11 +581,16 @@ public:
             }
 
             if(variables_.IsAPeriodicY==true && shift=="right" && iy%2==0 && Nc_(ix,iy)<LLY*2) {
+                std::cout << "ISAPeriodicY is true";
                 jx = int(ix + LLX*2 - 1);
                 jy = int(iy + 1);
                 if(jx<xmax+1 && iy<ymax+1 && Nc_(jx,jy)!=-1) {
                     int j = Nc_(jx,jy);
-                    N1neigh_(i,1) = -j;
+                    if(variables_.IsAPeriodicX==true){
+                        N1neigh_(i,1) = -j;
+                    } else if(variables_.IsAPeriodicX==false){
+                        N1neigh_(i,1) = j;
+                    }
                     N1neigh_(j,1) = -i;
                 }
             } else if(variables_.IsAPeriodicY==true && shift=="left" && iy%2==1 && Nc_(ix,iy)<LLY*2) {
@@ -584,7 +598,11 @@ public:
                 jy = int(iy - 1);
                 if(jx<xmax+1 && iy<ymax+1 && Nc_(jx,jy)!=-1) {
                     int j = Nc_(jx,jy);
-                    N1neigh_(i,2) = -j;
+                    if(variables_.IsAPeriodicX==true){
+                        N1neigh_(i,2) = -j;
+                    } else if(variables_.IsAPeriodicX==false){
+                        N1neigh_(i,2) = j;
+                    }
                     N1neigh_(j,2) = -i;
                 }
             }
@@ -601,6 +619,72 @@ public:
 
 	} // end function
 
+
+//    // ---------------- Heisenberg ---------------------------
+    void Heisenberg() {
+
+        int LLX = variables_.Lx;
+        int LLY = variables_.Ly;
+        // Site labeling
+        indx_.resize(Nsite_);   indy_.resize(Nsite_);
+        std::cout<<"Nsite_, LLX, LLY ="<<Nsite_<<LLX <<LLY <<std::endl;
+        Nc_.resize(LLX,LLY);
+        Nc_.fill(-1);
+
+
+        int	counter = 0;
+        for(int ix=0;ix<LLX;ix++){
+            for(int iy=0;iy<LLY;iy++){
+                Nc_(ix,iy) = counter;
+                indx_(counter)=ix;
+                indy_(counter)=iy;
+                //print ix, iy, counter
+                counter+=1;
+            }
+        }
+
+        for(int i=0;i<Nsite_;i++){ 	// ith site
+            int ix = indx_(i);
+            int iy = indy_(i);
+
+            // +x - 1neighbor 0
+            if(ix+1<LLX)  { // if not at the bottom edge
+                int jy = iy;
+                int jx = ix+1;
+                int j = Nc_(jx,jy); //site index of 1neighbor
+                //assert(j!=-1);
+                N1neigh_(i,0) = j;
+            }
+
+             //-x - 1neighbor 1
+            if(ix-1>-1)  {  // if not at the top edge
+                int jy = iy;
+                int jx = ix-1;
+                int j = Nc_(jx,jy);
+                //assert(j!=-1);
+                N1neigh_(i,1) = j;
+             }
+
+            // +y - 1neighbor 0
+            if(iy+1<LLY)  { // if not at the right edge
+                int jy = iy+1;
+                int jx = ix;
+                int j = Nc_(jx,jy); //site index of 1neighbor
+                //assert(j!=-1);
+                N1neigh_(i,2) = j;
+            }
+
+            //-y - 1neighbor 1
+            if(iy-1>-1)  { // if not at the left edge
+                int jy = iy-1;
+                int jx = ix;
+                int j = Nc_(jx,jy); //site index of 1neighbor
+                //assert(j!=-1);
+                N1neigh_(i,3) = j;
+            }
+
+            }
+    } // end function
 
 private:
 	ConstVariables& variables_;

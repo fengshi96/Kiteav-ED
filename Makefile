@@ -6,15 +6,14 @@ EXENAME  = main
 ### ------ Personal PC compilation ------------
 CXX     = g++
 CPPFLAGS = -std=c++11 
-LDFLAGS  = -L/opt/intel/mkl/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl
-#-L/opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/lib/intel64_lin -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -lpthread
-
+LDFLAGS = -Wl,--start-group /opt/intel/mkl/lib/intel64/libmkl_intel_ilp64.a /opt/intel/mkl/lib/intel64/libmkl_sequential.a /opt/intel/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm -ldl
+#LDFLAGS  += -L/opt/intel/compilers_and_libraries_2020.1.217/linux/compiler/lib/intel64_lin -liomp5 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core
 ### ------ Newton compilation ------------
 ### MUST USE: module load gcc/4.8.2
 #CXX = icpc  ### Or use g++ (both works!)
 #CPPFLAGS = -std=c++11
 #LDFLAGS = /data/apps/lapack/3.5.0/lib/liblapack.a /data/apps/lapack/3.5.0/lib/libblas.a -lgfortran
-
+# -Wl,--start-group /opt/intel/mkl/lib/intel64/lib/intel64/libmkl_intel_ilp64.a /opt/intel/mkl/lib/intel64/lib/intel64/libmkl_sequential.a /opt/intel/mkl/lib/intel64/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm -ldl
 #(DO NOT USE) LDFLAGS  = -lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lgfortran  (Intel libraries are not found - need fixing for threaded plasma lib)
 
 ## --- turn on for production -----------
