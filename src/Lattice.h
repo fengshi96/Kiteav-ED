@@ -683,6 +683,50 @@ public:
                 N1neigh_(i,3) = j;
             }
 
+            // - Lx periodic -
+            if(variables_.IsPeriodicX==true) {
+
+                // +x - 1neighbor 0
+                if(ix==LLX-1)  { // bottom edge
+                    int jy = iy;
+                    int jx = 0;
+                    int j = Nc_(jx,jy);
+                    assert(j!=-1);
+                    N1neigh_(i,0) = j;
+                }
+
+                // -x - 1neighbor 1
+                if(ix==0)  { // top edge
+                    int jy = iy;
+                    int jx = LLX-1;
+                    int j = Nc_(jx,jy);
+                    assert(j!=-1);
+                    N1neigh_(i,1) = j;
+                }
+            }
+
+                // - Ly periodic -
+                if(variables_.IsPeriodicX==true) {
+
+                    // +y - 1neighbor 2
+                    if(iy==LLY-1)  { // right edge
+                        int jy = 0;
+                        int jx = ix;
+                        int j = Nc_(jx,jy);
+                        assert(j!=-1);
+                        N1neigh_(i,2) = j;
+                    }
+
+                    // -y - 1neighbor 3
+                    if(iy==0)  { // left edge
+                        int jy = LLY-1;
+                        int jx = ix;
+                        int j = Nc_(jx,jy);
+                        assert(j!=-1);
+                        N1neigh_(i,3) = j;
+                    }
+                }
+
             }
     } // end function
 
