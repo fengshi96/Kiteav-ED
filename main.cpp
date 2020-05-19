@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <fstream>
 #include <stdio.h>
-//#include <omp.h>
+#include <omp.h>
 #include <vector>
 #include <cstdlib>
 #include <string>
@@ -45,7 +45,6 @@ typedef DynLanczosSolver DynLancType;
 typedef Observables ObservType;
 
 typedef std::complex<double> dcomplex;    // your typedef
-//typedef std::complex<double> dcomplex;    // your typedef
 void PrintGSSz(Eigen::VectorXcd& Psi, Basistype& Basis, int& Nsite_);
 void PrintGSConf(Eigen::VectorXcd& Psi, Basistype& Basis, int& Nsite_);
 //void PrintGSConf(VectorXf& Psi, Basistype& Basis, int& Nsite_, int& basisLabel1);
@@ -66,8 +65,8 @@ int main(int argc, char *argv[]) {
 
 	// Read from the inputfile
 	ConstVariablestype Parameters(inputfile);
-    //omp_set_dynamic(0);
-    //omp_set_num_threads(Parameters.Threads);
+        omp_set_dynamic(0);
+        omp_set_num_threads(Parameters.Threads);
 	Lattice Lat(Parameters);
 	int Nsite_ = Parameters.NumberofSites;
 
@@ -89,18 +88,18 @@ int main(int argc, char *argv[]) {
     std::cout << "       VM (MB): " << int(vm/1024) << "       RSS (MB): " << int(rss/1024) << std::endl;
 
 
-//    ObservType Observ(Parameters, Lat, Basis, Hamiltonian);
-//    DynLancType Lanczos(Parameters, Basis, Hamiltonian);
-//    Eigen::VectorXcd Psi;
-//    if(Parameters.Solver=="ED") {
-//        Psi = ExactDiag(Parameters, Basis, Hamiltonian, Observ);
-//    } else {
-//        Psi = Lanczos.Lanczos_Nirav(Parameters.LancType);
-//        cout << setprecision(6) << fixed;
-//        cout << " Ritz values: ";
-//        for(int i=0;i<Lanczos.TriDeval.size();i++) cout << Lanczos.TriDeval[i] << " ";
-//        cout << endl;
-//    }
+   ObservType Observ(Parameters, Lat, Basis, Hamiltonian);
+   DynLancType Lanczos(Parameters, Basis, Hamiltonian);
+   Eigen::VectorXcd Psi;
+   if(Parameters.Solver=="ED") {
+       Psi = ExactDiag(Parameters, Basis, Hamiltonian, Observ);
+   } else {
+       Psi = Lanczos.Lanczos_Nirav(Parameters.LancType);
+       cout << setprecision(6) << fixed;
+       cout << " Ritz values: ";
+       for(int i=0;i<Lanczos.TriDeval.size();i++) cout << Lanczos.TriDeval[i] << " ";
+       cout << endl;
+   }
 
 //    cout << setprecision(6) << fixed;
 //    cout << " Ritz values: ";
